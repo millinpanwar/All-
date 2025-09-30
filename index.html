@@ -1,0 +1,76 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CSV Toolkit — Free CSV Tools (Open-Source)</title>
+  <meta name="description" content="Free, fast, privacy-friendly CSV tools you can self-host. Convert CSV to JSON, SQL, HTML, Markdown, clean, merge, sort, validate, and more.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="assets/js/utils.js" defer></script>
+  <script>
+    async function loadTools(){
+      const res = await fetch('tools.json');
+      const tools = await res.json();
+      const byCat = {};
+      for(const t of tools){
+        if(!byCat[t.category]) byCat[t.category]=[];
+        byCat[t.category].push(t);
+      }
+      const wrap = document.querySelector('#tools');
+      wrap.innerHTML = '';
+      for(const cat of Object.keys(byCat)){
+        const h = document.createElement('h2'); h.textContent = cat;
+        wrap.appendChild(h);
+        const grid = document.createElement('div'); grid.className = 'card-grid';
+        for(const t of byCat[cat]){
+          const a = document.createElement('a');
+          a.href = t.page;
+          a.className = 'card';
+          a.innerHTML = `
+            <span class="badge">${t.category}</span>
+            <h3>${t.name}</h3>
+            <p>${t.desc}</p>
+          `;
+          grid.appendChild(a);
+        }
+        wrap.appendChild(grid);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', loadTools);
+  </script>
+<link rel="canonical" href="https://aiconverter.tools/">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">CSV</div>
+        <h1>CSV Toolkit</h1>
+      </div>
+      <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="sitemap">Sitemap</a>
+        <a href="about">About</a>
+      </div>
+    </div>
+    <div id="ads-top" class="panel alert"><small>Ad space: add AdSense in <span class="kbd">includes/adsense.html</span>.</small></div>
+    <div class="panel">
+      <h2>Open-Source CSV Utilities</h2>
+      <p>All tools run 100% in your browser—no file uploads. Customize with CSS, add new tools by copying a page, and edit SEO titles & descriptions per page.</p>
+    </div>
+    <div id="tools"></div>
+    <div id="ads-bottom" class="panel alert"><small>Ad space: add AdSense in <span class="kbd">includes/adsense.html</span>.</small></div>
+    <div class="footer">
+      <div>© 2025 CSV Toolkit.</div>
+      <div>Built for speed • No uploads • SEO-ready static pages</div>
+    </div>
+  </div>
+  <script>
+    fetch('includes/adsense.html').then(r=>r.text()).then(html=>{
+      ['ads-top','ads-bottom'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.innerHTML=html; }})
+    }).catch(()=>{});
+  </script>
+</body>
+</html>

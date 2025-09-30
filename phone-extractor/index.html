@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Phone Number Extractor — CSV Toolkit</title>
+  <meta name="description" content="Find and normalize phone numbers from any text. Supports international formats; export clean E.164 numbers.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  
+  <script src="../assets/js/utils.js"></script>
+<link rel="canonical" href="https://aiconverter.tools/phone-extractor">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Phone Number Extractor", "applicationCategory": "WebApplication", "operatingSystem": "Any", "description": "Find and normalize phone numbers from any text. Supports international formats; export clean E.164 numbers.", "url": "https://aiconverter.tools/phone-extractor", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What formats are supported?", "acceptedAnswer": {"@type": "Answer", "text": "We capture most common international formats, including numbers with +country code, spaces, parentheses, and dashes."}}, {"@type": "Question", "name": "How do you format to E.164?", "acceptedAnswer": {"@type": "Answer", "text": "Turn on ‘Format E.164’ and choose a default country. Numbers without a leading + will be prefixed with that country code."}}, {"@type": "Question", "name": "Is everything local?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Your text stays in the browser—nothing is uploaded."}}]}</script>
+
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">CT</div>
+        <h1>CSV Toolkit</h1>
+      </div>
+      <div class="nav">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+      </div>
+    </div>
+
+    <div class="tool">
+      <h2>Phone Number Extractor</h2>
+      <p class="muted">Find and normalize phone numbers from any text. Supports international formats; export clean E.164 numbers.</p>
+      <div id="ads-top" class="panel alert"><small>Ad space: add your ads HTML in <span class="kbd">includes/adsense.html</span>.</small></div>
+      
+<div class="panel">
+  <label class="label">Paste text</label>
+  <textarea id="input" rows="10" class="textarea" placeholder="Paste text, logs, emails, HTML, or CSV here..."></textarea>
+  <div class="row" style="gap:8px;margin-top:8px">
+    <input type="file" id="file" accept=".txt,.csv,.json,.html,.md,.log" />
+    <button id="extract" class="btn">Extract Phones</button>
+    <button id="clear" class="btn secondary">Clear</button>
+  </div>
+  <div class="row" style="gap:12px;margin-top:8px;flex-wrap:wrap">
+    <label><input type="checkbox" id="unique" checked> Unique only</label>
+    <label><input type="checkbox" id="sort" checked> Sort</label>
+    <label><input type="checkbox" id="onePerLine" checked> One per line</label>
+    <label><input type="checkbox" id="formatE164" checked> Format E.164</label>
+    <label>Assume country:
+      <select id="country">
+        <option value="">Auto / Unknown</option>
+        <option value="91">India (+91)</option>
+        <option value="1">US/Canada (+1)</option>
+        <option value="44">UK (+44)</option>
+        <option value="61">Australia (+61)</option>
+        <option value="64">New Zealand (+64)</option>
+        <option value="971">UAE (+971)</option>
+      </select>
+    </label>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <strong>Output <span id="count" class="muted"></span></strong>
+    <div class="row" style="gap:8px">
+      <button id="copy" class="btn">Copy</button>
+      <button id="downloadTxt" class="btn">Download TXT</button>
+      <button id="downloadCsv" class="btn">Download CSV</button>
+    </div>
+  </div>
+  <textarea id="output" rows="12" class="textarea monospace" readonly placeholder="Your extracted phone numbers will appear here..."></textarea>
+</div>
+
+<script>
+// Heuristic regex to capture common phone patterns with optional +country, spaces, dashes, dots, parentheses.
+// Examples: +91 98765 43210, (415) 555-2671, 98765-43210, +1-415-555-2671, 020 7946 0018
+const phoneRegex = /(?<!\w)(?:\+?\d{1,3}[\s\-\.]*)?(?:\(\d{2,4}\)[\s\-\.]*)?(?:\d[\s\-\.]*){7,12}\d(?!\w)/g;
+
+function cleanDigits(s){
+  // Keep digits and plus
+  s = s.trim();
+  // Remove extension markers like x123 or ext.123
+  s = s.replace(/(?:ext\.?|x)\s*\d+$/i, '');
+  const hasPlus = s.trim().startsWith('+');
+  const digits = s.replace(/[^\d]/g,'');
+  return (hasPlus ? '+' : '') + digits;
+}
+function toE164(s, assumeCode){
+  if(!s) return s;
+  if(s.startsWith('+')) return s;
+  if(!assumeCode) return s; // no country context
+  return '+' + assumeCode + s.replace(/^0+/, ''); // drop leading zeros when adding country
+}
+
+async function getInput(){
+  let text = document.getElementById('input').value || '';
+  const file = document.getElementById('file').files[0];
+  if(file){
+    try{ text += "\n" + await readTextFromFile(file); }catch(e){}
+  }
+  return text;
+}
+function extractPhones(text){
+  if(!text) return [];
+  const matches = text.match(phoneRegex) || [];
+  return matches;
+}
+function normalize(list){
+  const assume = document.getElementById('country').value;
+  const wantE164 = document.getElementById('formatE164').checked;
+  let out = list.map(cleanDigits).filter(s => s.replace(/\D/g,'').length >= 7);
+  if(wantE164){
+    out = out.map(s => toE164(s, assume));
+  }
+  if(document.getElementById('unique').checked){
+    out = Array.from(new Set(out));
+  }
+  if(document.getElementById('sort').checked){
+    out.sort();
+  }
+  return out;
+}
+function format(list){
+  return document.getElementById('onePerLine').checked ? list.join("\n") : list.join(", ");
+}
+function updateCount(n){ document.getElementById('count').textContent = n ? `(${n} found)` : ''; }
+
+document.getElementById('extract').addEventListener('click', async ()=>{
+  const text = await getInput();
+  const phones = normalize(extractPhones(text));
+  document.getElementById('output').value = format(phones);
+  updateCount(phones.length);
+});
+document.getElementById('clear').addEventListener('click', ()=>{
+  ['input','output'].forEach(id=> document.getElementById(id).value = '');
+  updateCount(0);
+});
+document.getElementById('copy').addEventListener('click', ()=>{
+  copyToClipboard(document.getElementById('output').value);
+});
+document.getElementById('downloadTxt').addEventListener('click', ()=>{
+  download('phones.txt', document.getElementById('output').value);
+});
+document.getElementById('downloadCsv').addEventListener('click', ()=>{
+  const rows = document.getElementById('output').value.split(/\n|,\s*/).filter(Boolean).map(e=>`"${e.replace(/"/g,'""')}"`).join("\n");
+  download('phones.csv', 'phone\n' + rows);
+});
+</script>
+
+      <div id="ads-bottom" class="panel alert"><small>Ad space</small></div>
+    </div>
+
+    <div class="faq">
+      <div class="faq-item"><div class="faq-q">What formats are supported?</div><div class="faq-a"><p>We capture most common international formats, including numbers with +country code, spaces, parentheses, and dashes.</p></div></div><div class="faq-item"><div class="faq-q">How do you format to E.164?</div><div class="faq-a"><p>Turn on ‘Format E.164’ and choose a default country. Numbers without a leading + will be prefixed with that country code.</p></div></div><div class="faq-item"><div class="faq-q">Is everything local?</div><div class="faq-a"><p>Yes. Your text stays in the browser—nothing is uploaded.</p></div></div>
+    </div>
+
+    <div class="footer">
+      <div>© 2025 CSV Toolkit.</div>
+      <div>Built for speed • No uploads • SEO-ready static pages</div>
+    </div>
+  </div>
+  <script>
+    fetch('../includes/adsense.html').then(r=>r.text()).then(html=>{
+      ['ads-top','ads-bottom'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; })
+    }).catch(()=>{});
+  </script>
+</body>
+</html>

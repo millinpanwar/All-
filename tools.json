@@ -1,0 +1,534 @@
+[
+  {
+    "slug": "csv-to-json",
+    "name": "CSV \u2192 JSON",
+    "category": "Convert",
+    "desc": "Turn CSV into JSON (objects or arrays).",
+    "page": "/csv-to-json"
+  },
+  {
+    "slug": "json-to-csv",
+    "name": "JSON \u2192 CSV",
+    "category": "Convert",
+    "desc": "Turn JSON arrays/objects into CSV.",
+    "page": "/json-to-csv"
+  },
+  {
+    "slug": "excel-to-csv",
+    "name": "Excel \u2192 CSV",
+    "category": "Convert",
+    "desc": "Convert .xlsx to CSV (choose sheet).",
+    "page": "/excel-to-csv"
+  },
+  {
+    "slug": "delimiter-converter",
+    "name": "Delimiter Converter",
+    "category": "Clean",
+    "desc": "Comma \u2194 Tab \u2194 Pipe \u2194 Semicolon.",
+    "page": "/delimiter-converter"
+  },
+  {
+    "slug": "csv-sort",
+    "name": "Sort CSV",
+    "category": "Clean",
+    "desc": "Sort by any column ascending/descending.",
+    "page": "/csv-sort"
+  },
+  {
+    "slug": "csv-deduplicate",
+    "name": "Deduplicate CSV",
+    "category": "Clean",
+    "desc": "Remove duplicate rows by key columns.",
+    "page": "/csv-deduplicate"
+  },
+  {
+    "slug": "csv-filter",
+    "name": "Filter CSV",
+    "category": "Clean",
+    "desc": "Filter rows by contains/equals/regex.",
+    "page": "/csv-filter"
+  },
+  {
+    "slug": "csv-merge",
+    "name": "Merge CSVs (Join)",
+    "category": "Combine",
+    "desc": "Join two CSV files by key columns.",
+    "page": "/csv-merge"
+  },
+  {
+    "slug": "csv-validator",
+    "name": "Validate CSV",
+    "category": "Validate",
+    "desc": "Find header issues & jagged rows.",
+    "page": "/csv-validator"
+  },
+  {
+    "slug": "csv-to-sql",
+    "name": "CSV \u2192 SQL",
+    "category": "Convert",
+    "desc": "Generate INSERT statements from CSV.",
+    "page": "/csv-to-sql"
+  },
+  {
+    "slug": "csv-to-html",
+    "name": "CSV \u2192 HTML Table",
+    "category": "Convert",
+    "desc": "Generate HTML table markup.",
+    "page": "/csv-to-html"
+  },
+  {
+    "slug": "csv-to-markdown",
+    "name": "CSV \u2192 Markdown Table",
+    "category": "Convert",
+    "desc": "Generate Markdown table.",
+    "page": "/csv-to-markdown"
+  },
+  {
+    "slug": "csv-transpose",
+    "name": "CSV Transpose",
+    "category": "Transform",
+    "desc": "Flip rows and columns (transpose).",
+    "page": "/csv-transpose"
+  },
+  {
+    "slug": "csv-pivot",
+    "name": "CSV Pivot / Aggregate",
+    "category": "Transform",
+    "desc": "Group by & aggregate numeric columns.",
+    "page": "/csv-pivot"
+  },
+  {
+    "slug": "csv-split-merge",
+    "name": "CSV Split / Merge Columns",
+    "category": "Transform",
+    "desc": "Split a column or merge multiple columns.",
+    "page": "/csv-split-merge"
+  },
+  {
+    "slug": "csv-format",
+    "name": "CSV Date / Number Formatter",
+    "category": "Transform",
+    "desc": "Format numbers (decimals/thousands) or dates.",
+    "page": "/csv-format"
+  },
+  {
+    "slug": "utf8-fixer",
+    "name": "UTF\u20118 Fixer (Decode)",
+    "category": "Clean",
+    "desc": "Re-decode Windows-1252/ISO-8859-1 into UTF\u20118.",
+    "page": "/utf8-fixer"
+  },
+  {
+    "slug": "video-compress",
+    "name": "Video Compressor",
+    "category": "Media",
+    "desc": "Compress video (in-browser ffmpeg.wasm).",
+    "page": "/video-compress"
+  },
+  {
+    "slug": "mp4-to-mp3",
+    "name": "MP4 \u2192 MP3",
+    "category": "Media",
+    "desc": "Extract MP3 audio from MP4 in browser.",
+    "page": "/mp4-to-mp3"
+  },
+  {
+    "slug": "webp-to-png",
+    "name": "WebP \u2192 PNG",
+    "category": "Images",
+    "desc": "Convert WebP to PNG client-side.",
+    "page": "/webp-to-png"
+  },
+  {
+    "slug": "png-to-webp",
+    "name": "PNG \u2192 WebP",
+    "category": "Images",
+    "desc": "Convert PNG to WebP (quality slider).",
+    "page": "/png-to-webp"
+  },
+  {
+    "slug": "amps-to-kw",
+    "name": "Amps \u2192 kW",
+    "category": "Electrical",
+    "desc": "Convert current (A) to power (kW). Choose phase and power factor; enter voltage.",
+    "page": "/amps-to-kw"
+  },
+  {
+    "slug": "amps-to-kva",
+    "name": "Amps \u2192 kVA",
+    "category": "Electrical",
+    "desc": "Convert amps to apparent power (kVA).",
+    "page": "/amps-to-kva"
+  },
+  {
+    "slug": "amps-to-va",
+    "name": "Amps \u2192 VA",
+    "category": "Electrical",
+    "desc": "Convert amps to apparent power (VA).",
+    "page": "/amps-to-va"
+  },
+  {
+    "slug": "amps-to-volts",
+    "name": "Amps \u2192 Volts",
+    "category": "Electrical",
+    "desc": "Convert amps to volts using Ohm\u2019s Law (V = I \u00d7 R).",
+    "page": "/amps-to-volts"
+  },
+  {
+    "slug": "amps-to-watts",
+    "name": "Amps \u2192 Watts",
+    "category": "Electrical",
+    "desc": "Convert amps to watts (choose system and PF).",
+    "page": "/amps-to-watts"
+  },
+  {
+    "slug": "electricity-bill",
+    "name": "Electricity Bill Calculator",
+    "category": "Electrical",
+    "desc": "Estimate bill from energy use and rate. Enter either direct kWh or device power/time.",
+    "page": "/electricity-bill"
+  },
+  {
+    "slug": "energy-consumption",
+    "name": "Energy Consumption Calculator",
+    "category": "Electrical",
+    "desc": "Compute energy from power and time.",
+    "page": "/energy-consumption"
+  },
+  {
+    "slug": "energy-cost",
+    "name": "Energy Cost Calculator",
+    "category": "Electrical",
+    "desc": "Estimate cost from device power, time and rate.",
+    "page": "/energy-cost"
+  },
+  {
+    "slug": "ev-to-volts",
+    "name": "eV \u2192 Volts",
+    "category": "Electrical",
+    "desc": "Convert energy in electronvolts to equivalent potential difference (for z charges). For a single electron (z=1), 1 eV \u2194 1 V.",
+    "page": "/ev-to-volts"
+  },
+  {
+    "slug": "joules-to-watts",
+    "name": "Joules \u2192 Watts",
+    "category": "Electrical",
+    "desc": "Power is energy per unit time (W = J / s).",
+    "page": "/joules-to-watts"
+  },
+  {
+    "slug": "joules-to-volts",
+    "name": "Joules \u2192 Volts",
+    "category": "Electrical",
+    "desc": "V = J / Q. Enter charge (C) or number of electrons.",
+    "page": "/joules-to-volts"
+  },
+  {
+    "slug": "kva-to-amps",
+    "name": "kVA \u2192 Amps",
+    "category": "Electrical",
+    "desc": "Convert apparent power (kVA) to current (A).",
+    "page": "/kva-to-amps"
+  },
+  {
+    "slug": "kva-to-watts",
+    "name": "kVA \u2192 Watts",
+    "category": "Electrical",
+    "desc": "Convert apparent power to real power using PF: W = kVA \u00d7 1000 \u00d7 PF.",
+    "page": "/kva-to-watts"
+  },
+  {
+    "slug": "kva-to-kw",
+    "name": "kVA \u2192 kW",
+    "category": "Electrical",
+    "desc": "kW = kVA \u00d7 PF.",
+    "page": "/kva-to-kw"
+  },
+  {
+    "slug": "kva-to-va",
+    "name": "kVA \u2192 VA",
+    "category": "Electrical",
+    "desc": "VA = kVA \u00d7 1000.",
+    "page": "/kva-to-va"
+  },
+  {
+    "slug": "kw-to-amps",
+    "name": "kW \u2192 Amps",
+    "category": "Electrical",
+    "desc": "Convert real power (kW) to current (A).",
+    "page": "/kw-to-amps"
+  },
+  {
+    "slug": "kw-to-volts",
+    "name": "kW \u2192 Volts",
+    "category": "Electrical",
+    "desc": "Compute volts from kW, current and PF.",
+    "page": "/kw-to-volts"
+  },
+  {
+    "slug": "kw-to-kwh",
+    "name": "kW \u2192 kWh",
+    "category": "Electrical",
+    "desc": "Energy = power \u00d7 time.",
+    "page": "/kw-to-kwh"
+  },
+  {
+    "slug": "kw-to-va",
+    "name": "kW \u2192 VA",
+    "category": "Electrical",
+    "desc": "Apparent power (VA) from real power and PF.",
+    "page": "/kw-to-va"
+  },
+  {
+    "slug": "kw-to-kva",
+    "name": "kW \u2192 kVA",
+    "category": "Electrical",
+    "desc": "kVA = kW / PF.",
+    "page": "/kw-to-kva"
+  },
+  {
+    "slug": "kwh-to-kw",
+    "name": "kWh \u2192 kW",
+    "category": "Electrical",
+    "desc": "Compute average kW from energy and hours.",
+    "page": "/kwh-to-kw"
+  },
+  {
+    "slug": "kwh-to-watts",
+    "name": "kWh \u2192 Watts",
+    "category": "Electrical",
+    "desc": "Compute average watts from energy and hours.",
+    "page": "/kwh-to-watts"
+  },
+  {
+    "slug": "mah-to-wh",
+    "name": "mAh \u2192 Wh",
+    "category": "Electrical",
+    "desc": "Battery capacity conversion: Wh = (mAh \u00d7 V)/1000.",
+    "page": "/mah-to-wh"
+  },
+  {
+    "slug": "ohms-law",
+    "name": "Ohm\u2019s Law Calculator",
+    "category": "Electrical",
+    "desc": "Enter any two of V, I, R; we\u2019ll compute the third (and power).",
+    "page": "/ohms-law"
+  },
+  {
+    "slug": "power-calculator",
+    "name": "Power Calculator",
+    "category": "Electrical",
+    "desc": "Compute real power from common inputs.",
+    "page": "/power-calculator"
+  },
+  {
+    "slug": "power-factor",
+    "name": "Power Factor Calculator",
+    "category": "Electrical",
+    "desc": "PF = kW / kVA = W / VA. We also show the phase angle (cos \u03c6 = PF).",
+    "page": "/power-factor"
+  },
+  {
+    "slug": "va-to-amps",
+    "name": "VA \u2192 Amps",
+    "category": "Electrical",
+    "desc": "Convert VA to current (A).",
+    "page": "/va-to-amps"
+  },
+  {
+    "slug": "va-to-watts",
+    "name": "VA \u2192 Watts",
+    "category": "Electrical",
+    "desc": "W = VA \u00d7 PF.",
+    "page": "/va-to-watts"
+  },
+  {
+    "slug": "va-to-kw",
+    "name": "VA \u2192 kW",
+    "category": "Electrical",
+    "desc": "kW = (VA \u00d7 PF)/1000.",
+    "page": "/va-to-kw"
+  },
+  {
+    "slug": "va-to-kva",
+    "name": "VA \u2192 kVA",
+    "category": "Electrical",
+    "desc": "kVA = VA / 1000.",
+    "page": "/va-to-kva"
+  },
+  {
+    "slug": "voltage-divider",
+    "name": "Voltage Divider Calculator",
+    "category": "Electrical",
+    "desc": "Two-resistor divider: Vout = Vin \u00d7 R2/(R1+R2). Also shows current.",
+    "page": "/voltage-divider"
+  },
+  {
+    "slug": "voltage-drop",
+    "name": "Voltage Drop Calculator",
+    "category": "Electrical",
+    "desc": "Estimate voltage drop along a round-trip conductor using AWG and material.",
+    "page": "/voltage-drop"
+  },
+  {
+    "slug": "volts-to-amps",
+    "name": "Volts \u2192 Amps",
+    "category": "Electrical",
+    "desc": "Ohm\u2019s law: I = V / R.",
+    "page": "/volts-to-amps"
+  },
+  {
+    "slug": "volts-to-watts",
+    "name": "Volts \u2192 Watts",
+    "category": "Electrical",
+    "desc": "Compute watts from V and I (with PF/system).",
+    "page": "/volts-to-watts"
+  },
+  {
+    "slug": "volts-to-kw",
+    "name": "Volts \u2192 kW",
+    "category": "Electrical",
+    "desc": "Compute kW from V and I (with PF/system).",
+    "page": "/volts-to-kw"
+  },
+  {
+    "slug": "volts-to-joules",
+    "name": "Volts \u2192 Joules",
+    "category": "Electrical",
+    "desc": "Energy = V \u00d7 Q. Enter charge in coulombs or number of electrons.",
+    "page": "/volts-to-joules"
+  },
+  {
+    "slug": "volts-to-ev",
+    "name": "Volts \u2192 eV",
+    "category": "Electrical",
+    "desc": "For z charges, eV = z \u00d7 V.",
+    "page": "/volts-to-ev"
+  },
+  {
+    "slug": "w-v-a-o-calculator",
+    "name": "Watts\u2013Volts\u2013Amps\u2013Ohms Calculator",
+    "category": "Electrical",
+    "desc": "Enter any two independent quantities among V, I, R, P; we\u2019ll compute the rest.",
+    "page": "/w-v-a-o-calculator"
+  },
+  {
+    "slug": "watts-to-amps",
+    "name": "Watts \u2192 Amps",
+    "category": "Electrical",
+    "desc": "Convert watts to amps (choose system and PF).",
+    "page": "/watts-to-amps"
+  },
+  {
+    "slug": "watts-to-joules",
+    "name": "Watts \u2192 Joules",
+    "category": "Electrical",
+    "desc": "Energy = power \u00d7 time.",
+    "page": "/watts-to-joules"
+  },
+  {
+    "slug": "watts-to-kwh",
+    "name": "Watts \u2192 kWh",
+    "category": "Electrical",
+    "desc": "Energy (kWh) from watts and hours.",
+    "page": "/watts-to-kwh"
+  },
+  {
+    "slug": "watts-to-volts",
+    "name": "Watts \u2192 Volts",
+    "category": "Electrical",
+    "desc": "Compute volts from W, current and PF/system.",
+    "page": "/watts-to-volts"
+  },
+  {
+    "slug": "watts-to-va",
+    "name": "Watts \u2192 VA",
+    "category": "Electrical",
+    "desc": "VA = W / PF.",
+    "page": "/watts-to-va"
+  },
+  {
+    "slug": "watts-to-kva",
+    "name": "Watts \u2192 kVA",
+    "category": "Electrical",
+    "desc": "kVA = (W / PF) / 1000.",
+    "page": "/watts-to-kva"
+  },
+  {
+    "slug": "wh-to-mah",
+    "name": "Wh \u2192 mAh",
+    "category": "Electrical",
+    "desc": "Battery conversion: mAh = (Wh \u00d7 1000) / V.",
+    "page": "/wh-to-mah"
+  },
+  {
+    "slug": "wire-gauge-calculator",
+    "name": "Wire Gauge Calculator",
+    "category": "Electrical",
+    "desc": "Suggest minimum AWG to keep voltage drop below a limit for given current and length (round trip assumed).",
+    "page": "/wire-gauge-calculator"
+  },
+  {
+    "slug": "wash-sale-calculator",
+    "name": "Wash Sale Calculator",
+    "category": "Finance",
+    "desc": "Estimate wash-sale disallowed loss, adjusted basis and holding period.",
+    "page": "/wash-sale-calculator"
+  },
+  {
+    "slug": "rsu-sell-to-cover",
+    "name": "RSU Sell\u2011to\u2011Cover Calculator",
+    "category": "Finance",
+    "desc": "Figure shares sold for taxes, net shares delivered, and withholding.",
+    "page": "/rsu-sell-to-cover"
+  },
+  {
+    "slug": "iso-amt-credit-carryforward",
+    "name": "ISO AMT Credit Carryforward",
+    "category": "Finance",
+    "desc": "Compute allowed AMT credit use this year and remaining carryforward.",
+    "page": "/iso-amt-credit-carryforward"
+  },
+  {
+    "slug": "solo-401k-scorp",
+    "name": "Solo 401k S\u2011Corp Calculator",
+    "category": "Retirement",
+    "desc": "Max employee deferral + employer profit\u2011sharing for S\u2011Corp W\u20112 wages (2025).",
+    "page": "/solo-401k-scorp"
+  },
+  {
+    "slug": "equity-tax-outcome",
+    "name": "RSU/ISO/NSO Tax Outcome",
+    "category": "Equity",
+    "desc": "Estimate taxes for RSU, ISO, and NSO scenarios (AMT\u2011aware).",
+    "page": "/equity-tax-outcome"
+  },
+  {
+    "slug": "email-extractor",
+    "name": "Email Extractor",
+    "category": "Transform",
+    "description": "Extract and deduplicate email addresses from any text.",
+    "page": "/email-extractor"
+  },
+  {
+    "slug": "url-extractor",
+    "name": "URL Extractor",
+    "category": "Transform",
+    "description": "Extract and deduplicate URLs from any text.",
+    "page": "/url-extractor"
+  },
+  {
+    "slug": "phone-extractor",
+    "name": "Phone Extractor",
+    "category": "Transform",
+    "description": "Extract and normalize phone numbers from any text.",
+    "page": "/phone-extractor"
+  },
+  {
+    "slug": "csv-template-engine",
+    "name": "CSV Template Engine",
+    "category": "Transform",
+    "description": "Use a {{column}} template to generate text from CSV rows (bulk meta, descriptions, outreach).",
+    "page": "/csv-template-engine"
+  }
+]

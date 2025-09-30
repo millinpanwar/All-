@@ -1,0 +1,49 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sitemap — CSV Toolkit</title>
+  <meta name="description" content="Sitemap of CSV Toolkit tools.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>
+    async function load(){
+      const res = await fetch('tools.json');
+      const tools = await res.json();
+      const wrap = document.getElementById('list');
+      wrap.innerHTML = '';
+      tools.forEach(t=>{
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${t.page}">${t.name}</a> — <small>${t.category}</small>`;
+        wrap.appendChild(li);
+      });
+    }
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+<link rel="canonical" href="https://aiconverter.tools/sitemap">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">CSV</div>
+        <h1>CSV Toolkit</h1>
+      </div>
+      <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="sitemap">Sitemap</a>
+        <a href="about">About</a>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Sitemap</h2>
+      <ul id="list"></ul>
+    </div>
+    <div class="footer">
+      <div>© 2025 CSV Toolkit.</div>
+      <div>Open-source • MIT License</div>
+    </div>
+  </div>
+</body>
+</html>

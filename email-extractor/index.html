@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Email Extractor — CSV Toolkit</title>
+  <meta name="description" content="Extract all email addresses from any text. Paste text or upload a file; get a clean, deduplicated list you can copy or download.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  
+  <script src="../assets/js/utils.js"></script>
+<link rel="canonical" href="https://aiconverter.tools/email-extractor">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Email Extractor", "applicationCategory": "WebApplication", "operatingSystem": "Any", "description": "Extract all email addresses from any text. Paste text or upload a file; get a clean, deduplicated list you can copy or download.", "url": "https://aiconverter.tools/email-extractor", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How are emails detected?", "acceptedAnswer": {"@type": "Answer", "text": "We use a strict regular expression that matches common email formats like name@example.com. It avoids most false positives but you should still review results."}}, {"@type": "Question", "name": "Do you upload my text?", "acceptedAnswer": {"@type": "Answer", "text": "No. Everything runs in your browser. Your data never leaves your device."}}, {"@type": "Question", "name": "Can I download as CSV?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Use the Download CSV button to get a single-column CSV named ‘email’."}}]}</script>
+
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">CT</div>
+        <h1>CSV Toolkit</h1>
+      </div>
+      <div class="nav">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+      </div>
+    </div>
+
+    <div class="tool">
+      <h2>Email Extractor</h2>
+      <p class="muted">Extract all email addresses from any text. Paste text or upload a file; get a clean, deduplicated list you can copy or download.</p>
+      <div id="ads-top" class="panel alert"><small>Ad space: add your ads HTML in <span class="kbd">includes/adsense.html</span>.</small></div>
+      
+<div class="panel">
+  <label class="label">Paste text</label>
+  <textarea id="input" rows="10" class="textarea" placeholder="Paste text, logs, HTML, or CSV here..."></textarea>
+  <div class="row" style="gap:8px;margin-top:8px">
+    <input type="file" id="file" accept=".txt,.csv,.json,.html,.md,.log" />
+    <button id="extract" class="btn">Extract Emails</button>
+    <button id="clear" class="btn secondary">Clear</button>
+  </div>
+  <div class="row" style="gap:8px;margin-top:8px">
+    <label><input type="checkbox" id="unique" checked> Unique only</label>
+    <label><input type="checkbox" id="lower" checked> Lowercase</label>
+    <label><input type="checkbox" id="sort" checked> Sort</label>
+    <label><input type="checkbox" id="onePerLine" checked> One per line</label>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <strong>Output <span id="count" class="muted"></span></strong>
+    <div class="row" style="gap:8px">
+      <button id="copy" class="btn">Copy</button>
+      <button id="downloadTxt" class="btn">Download TXT</button>
+      <button id="downloadCsv" class="btn">Download CSV</button>
+    </div>
+  </div>
+  <textarea id="output" rows="12" class="textarea monospace" readonly placeholder="Your extracted emails will appear here..."></textarea>
+</div>
+
+<script>
+const emailRegex = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
+
+async function getInput(){
+  let text = document.getElementById('input').value || '';
+  const file = document.getElementById('file').files[0];
+  if(file){
+    try{ text += "\n" + await readTextFromFile(file); }catch(e){}
+  }
+  return text;
+}
+function extractEmails(text){
+  if(!text) return [];
+  const matches = text.match(emailRegex) || [];
+  return matches;
+}
+function normalize(list){
+  let out = list.slice();
+  if(document.getElementById('lower').checked){
+    out = out.map(s => s.toLowerCase());
+  }
+  if(document.getElementById('unique').checked){
+    out = Array.from(new Set(out));
+  }
+  if(document.getElementById('sort').checked){
+    out.sort();
+  }
+  return out;
+}
+function format(list){
+  return document.getElementById('onePerLine').checked ? list.join("\n") : list.join(", ");
+}
+function updateCount(n){ document.getElementById('count').textContent = n ? `(${n} found)` : ''; }
+
+document.getElementById('extract').addEventListener('click', async ()=>{
+  const text = await getInput();
+  const emails = normalize(extractEmails(text));
+  document.getElementById('output').value = format(emails);
+  updateCount(emails.length);
+});
+document.getElementById('clear').addEventListener('click', ()=>{
+  ['input','output'].forEach(id=> document.getElementById(id).value = '');
+  updateCount(0);
+});
+document.getElementById('copy').addEventListener('click', ()=>{
+  copyToClipboard(document.getElementById('output').value);
+});
+document.getElementById('downloadTxt').addEventListener('click', ()=>{
+  download('emails.txt', document.getElementById('output').value);
+});
+document.getElementById('downloadCsv').addEventListener('click', ()=>{
+  const rows = document.getElementById('output').value.split(/\n|,\s*/).filter(Boolean).map(e=>`"${e.replace(/"/g,'""')}"`).join("\n");
+  download('emails.csv', 'email\n' + rows);
+});
+</script>
+
+      <div id="ads-bottom" class="panel alert"><small>Ad space</small></div>
+    </div>
+
+    <div class="faq">
+      <div class="faq-item"><div class="faq-q">How are emails detected?</div><div class="faq-a"><p>We use a strict regular expression that matches common email formats like name@example.com. It avoids most false positives but you should still review results.</p></div></div><div class="faq-item"><div class="faq-q">Do you upload my text?</div><div class="faq-a"><p>No. Everything runs in your browser. Your data never leaves your device.</p></div></div><div class="faq-item"><div class="faq-q">Can I download as CSV?</div><div class="faq-a"><p>Yes. Use the Download CSV button to get a single-column CSV named ‘email’.</p></div></div>
+    </div>
+
+    <div class="footer">
+      <div>© 2025 CSV Toolkit.</div>
+      <div>Built for speed • No uploads • SEO-ready static pages</div>
+    </div>
+  </div>
+  <script>
+    fetch('../includes/adsense.html').then(r=>r.text()).then(html=>{
+      ['ads-top','ads-bottom'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; })
+    }).catch(()=>{});
+  </script>
+</body>
+</html>

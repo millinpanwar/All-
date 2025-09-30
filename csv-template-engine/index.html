@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CSV Template Engine — CSV Toolkit</title>
+  <meta name="description" content="Generate text from CSV rows using a simple {{column}} template. Perfect for meta tags, outreach drafts, or bulk descriptions.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  
+  <script src="../assets/js/utils.js"></script>
+<link rel="canonical" href="https://aiconverter.tools/csv-template-engine">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "CSV Template Engine", "applicationCategory": "WebApplication", "operatingSystem": "Any", "description": "Generate text from CSV rows using a simple {{column}} template. Perfect for meta tags, outreach drafts, or bulk descriptions.", "url": "https://aiconverter.tools/csv-template-engine", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I reference CSV columns?", "acceptedAnswer": {"@type": "Answer", "text": "Use double braces like {{columnName}}. If your CSV has no header, uncheck the header option and use {{c1}}, {{c2}}, etc."}}, {"@type": "Question", "name": "What filters are available?", "acceptedAnswer": {"@type": "Answer", "text": "Use {{name|upper}}, {{name|lower}}, or {{name|urlencode}} to transform values."}}, {"@type": "Question", "name": "Does this upload my CSV?", "acceptedAnswer": {"@type": "Answer", "text": "No. Parsing and rendering are done entirely in your browser."}}]}</script>
+
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">CT</div>
+        <h1>CSV Toolkit</h1>
+      </div>
+      <div class="nav">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+      </div>
+    </div>
+
+    <div class="tool">
+      <h2>CSV Template Engine</h2>
+      <p class="muted">Generate text from CSV rows using a simple {{column}} template. Perfect for meta tags, outreach drafts, or bulk descriptions.</p>
+      <div id="ads-top" class="panel alert"><small>Ad space: add your ads HTML in <span class="kbd">includes/adsense.html</span>.</small></div>
+      
+<div class="panel">
+  <div class="row" style="gap:16px;align-items:flex-end;flex-wrap:wrap">
+    <div style="flex:1;min-width:280px">
+      <label class="label">CSV input</label>
+      <textarea id="csvInput" rows="10" class="textarea monospace" placeholder="Paste CSV here or upload a file..."></textarea>
+      <div class="row" style="gap:8px;margin-top:8px">
+        <input type="file" id="csvFile" accept=".csv,.txt" />
+        <button id="loadSample" class="btn secondary">Load sample</button>
+      </div>
+    </div>
+    <div style="flex:1;min-width:280px">
+      <label class="label">Template (use {{column}})</label>
+      <textarea id="template" rows="10" class="textarea monospace" placeholder="e.g., &lt;title&gt;Buy {{product}} in {{city}} | {{brand}}&lt;/title&gt;"></textarea>
+      <div class="row" style="gap:8px;margin-top:8px">
+        <label><input type="checkbox" id="skipHeader"> CSV has no header (use c1,c2,...)</label>
+        <label><input type="checkbox" id="trim" checked> Trim values</label>
+      </div>
+      <small class="muted">Available helpers: {{row}} (1-based index). Filters: {{name|upper}}, {{name|lower}}, {{name|urlencode}}.</small>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <strong>Output</strong>
+    <div class="row" style="gap:8px">
+      <label>Join with:
+        <select id="joiner">
+          <option value="\n\n">Blank line</option>
+          <option value="\n">New line</option>
+          <option value=", ">Comma + space</option>
+          <option value="\t">Tab</option>
+        </select>
+      </label>
+      <button id="render" class="btn">Render</button>
+      <button id="copy" class="btn">Copy</button>
+      <button id="download" class="btn">Download TXT</button>
+    </div>
+  </div>
+  <textarea id="output" rows="12" class="textarea monospace" readonly placeholder="Rendered text will appear here..."></textarea>
+</div>
+
+<script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+function parseCSV(text){
+  return Papa.parse(text, {header: !document.getElementById('skipHeader').checked, skipEmptyLines: true}).data;
+}
+function getCSVText(){
+  return document.getElementById('csvInput').value || '';
+}
+async function loadCSVFromFile(){
+  const file = document.getElementById('csvFile').files[0];
+  if(!file) return '';
+  try { return await readTextFromFile(file); } catch(e){ return ''; }
+}
+function applyFilter(val, filter){
+  val = String(val == null ? '' : val);
+  if(filter === 'upper') return val.toUpperCase();
+  if(filter === 'lower') return val.toLowerCase();
+  if(filter === 'urlencode') return encodeURIComponent(val);
+  return val;
+}
+function renderTemplate(tpl, rowObj, idx){
+  return tpl.replace(/\{\{\s*([a-zA-Z0-9_]+)(?:\|([a-zA-Z0-9_]+))?\s*\}\}/g, (m, key, fil) => {
+    if(key === 'row') return String(idx+1);
+    let val = rowObj[key];
+    if(val == null) val = '';
+    if(document.getElementById('trim').checked) val = String(val).trim();
+    if(fil) val = applyFilter(val, fil);
+    return val;
+  });
+}
+document.getElementById('loadSample').addEventListener('click', ()=>{
+  document.getElementById('csvInput').value = "product,city,brand\nHelmet,Jaipur,Dust Prophet\nGloves,Mumbai,Dust Prophet";
+  document.getElementById('template').value = "<title>Buy {{product}} in {{city}} | {{brand}}</title>";
+});
+document.getElementById('render').addEventListener('click', async ()=>{
+  let csvText = getCSVText();
+  if(!csvText){
+    csvText = await loadCSVFromFile();
+    document.getElementById('csvInput').value = csvText;
+  }
+  const rows = parseCSV(csvText);
+  const tpl = document.getElementById('template').value || "";
+  const out = rows.map((row, idx)=> renderTemplate(tpl, row, idx));
+  const joined = out.join(document.getElementById('joiner').value);
+  document.getElementById('output').value = joined;
+});
+document.getElementById('copy').addEventListener('click', ()=>{
+  copyToClipboard(document.getElementById('output').value);
+});
+document.getElementById('download').addEventListener('click', ()=>{
+  download('template-output.txt', document.getElementById('output').value);
+});
+</script>
+
+      <div id="ads-bottom" class="panel alert"><small>Ad space</small></div>
+    </div>
+
+    <div class="faq">
+      <div class="faq-item"><div class="faq-q">How do I reference CSV columns?</div><div class="faq-a"><p>Use double braces like {{columnName}}. If your CSV has no header, uncheck the header option and use {{c1}}, {{c2}}, etc.</p></div></div><div class="faq-item"><div class="faq-q">What filters are available?</div><div class="faq-a"><p>Use {{name|upper}}, {{name|lower}}, or {{name|urlencode}} to transform values.</p></div></div><div class="faq-item"><div class="faq-q">Does this upload my CSV?</div><div class="faq-a"><p>No. Parsing and rendering are done entirely in your browser.</p></div></div>
+    </div>
+
+    <div class="footer">
+      <div>© 2025 CSV Toolkit.</div>
+      <div>Built for speed • No uploads • SEO-ready static pages</div>
+    </div>
+  </div>
+  <script>
+    fetch('../includes/adsense.html').then(r=>r.text()).then(html=>{
+      ['ads-top','ads-bottom'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; })
+    }).catch(()=>{});
+  </script>
+</body>
+</html>
