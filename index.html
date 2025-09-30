@@ -13,59 +13,120 @@
     async function loadTools(){
       const res = await fetch('tools.json');
       const tools = await res.json();
-      const byCat = {};
-      for(const t of tools){
-        if(!byCat[t.category]) byCat[t.category]=[];
-        byCat[t.category].push(t);
-      }
+
       const wrap = document.querySelector('#tools');
-      wrap.innerHTML = '';
-      for(const cat of Object.keys(byCat)){
-        const h = document.createElement('h2'); h.textContent = cat;
-        wrap.appendChild(h);
-        const grid = document.createElement('div'); grid.className = 'card-grid';
-        for(const t of byCat[cat]){
-          const a = document.createElement('a');
-          a.href = t.page;
-          a.className = 'card';
-          a.innerHTML = `
+      const popularList = document.querySelector('#popular');
+      const recentList = document.querySelector('#recent');
+
+      if(wrap){
+        wrap.innerHTML = '';
+        tools.forEach(t=>{
+          const card = document.createElement('article');
+          card.className = 'card';
+          card.innerHTML = `
             <span class="badge">${t.category}</span>
             <h3>${t.name}</h3>
             <p>${t.desc}</p>
+            <div class="open-link"><a href="${t.page}">Open tool</a></div>
           `;
-          grid.appendChild(a);
-        }
-        wrap.appendChild(grid);
+          wrap.appendChild(card);
+        });
       }
+
+      const createListItems = (listEl, data)=>{
+        if(!listEl) return;
+        listEl.innerHTML = '';
+        data.forEach(item=>{
+          const li = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = item.page;
+          link.textContent = item.name;
+          li.appendChild(link);
+          listEl.appendChild(li);
+        });
+      };
+
+      const popularSlugs = ['csv-to-json','json-to-csv','excel-to-csv','csv-validator','csv-merge','csv-split-merge'];
+      const popularTools = tools.filter(t=>popularSlugs.includes(t.slug));
+      createListItems(popularList, popularTools);
+
+      const recentTools = tools.slice(-6).reverse();
+      createListItems(recentList, recentTools);
     }
     document.addEventListener('DOMContentLoaded', loadTools);
   </script>
 <link rel="canonical" href="https://aiconverter.tools/">
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="brand">
-        <div class="logo">CSV</div>
-        <h1>CSV Toolkit</h1>
+  <div class="page">
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href="/">
+          <div class="logo">CSV</div>
+          <span>CSV Toolkit</span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="index.html">Tools</a>
+          <a href="sitemap">Sitemap</a>
+          <a href="about">About</a>
+        </nav>
       </div>
-      <div class="nav">
-        <a href="index.html">Home</a>
-        <a href="sitemap">Sitemap</a>
-        <a href="about">About</a>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div>
+          <div class="hero-pill">New UI · 2025</div>
+          <h1>Convert CSV & files faster — private, in-browser.</h1>
+          <p>Batch convert, clean, and validate CSV files with lightweight tools that never send your data to a server. Launch instantly, tweak the code, or self-host for full control.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="csv-to-json">CSV → JSON</a>
+            <a class="btn btn-secondary" href="json-to-csv">JSON → CSV</a>
+          </div>
+        </div>
+        <aside class="hero-card">
+          <h3>Why CSV Toolkit?</h3>
+          <ul class="hero-list">
+            <li>⚡ Runs 100% in your browser.</li>
+            <li>🛡️ Zero uploads, your data stays private.</li>
+            <li>🧩 Copy & remix any tool for your workflow.</li>
+          </ul>
+        </aside>
+      </section>
+
+      <div id="ads-top" class="panel alert"><small>Advertisement — replace with AdSense via <span class="kbd">includes/adsense.html</span>.</small></div>
+
+      <div class="layout-grid">
+        <section>
+          <div class="section-header">
+            <h2>All Tools</h2>
+            <p>Browse converters, validators, extractors, and calculators. Everything is open source and ready to drop into your stack.</p>
+          </div>
+          <div id="tools" class="card-grid"></div>
+        </section>
+        <aside class="sidebar">
+          <div class="panel">
+            <h3>Popular engines</h3>
+            <ul id="popular" class="list-unstyled"></ul>
+          </div>
+          <div class="panel">
+            <h3>Recently added</h3>
+            <ul id="recent" class="list-unstyled"></ul>
+          </div>
+          <div class="panel">
+            <h3>Need a custom CSV tool?</h3>
+            <p class="muted">Duplicate any page, swap in your script, and update <span class="kbd">tools.json</span>. Deploy statically with your favorite host.</p>
+          </div>
+        </aside>
       </div>
-    </div>
-    <div id="ads-top" class="panel alert"><small>Ad space: add AdSense in <span class="kbd">includes/adsense.html</span>.</small></div>
-    <div class="panel">
-      <h2>Open-Source CSV Utilities</h2>
-      <p>All tools run 100% in your browser—no file uploads. Customize with CSS, add new tools by copying a page, and edit SEO titles & descriptions per page.</p>
-    </div>
-    <div id="tools"></div>
-    <div id="ads-bottom" class="panel alert"><small>Ad space: add AdSense in <span class="kbd">includes/adsense.html</span>.</small></div>
-    <div class="footer">
+
+      <div id="ads-bottom" class="panel alert"><small>Advertisement — replace with AdSense via <span class="kbd">includes/adsense.html</span>.</small></div>
+    </main>
+
+    <footer class="footer container">
       <div>© 2025 CSV Toolkit.</div>
       <div>Built for speed • No uploads • SEO-ready static pages</div>
-    </div>
+    </footer>
   </div>
   <script>
     fetch('includes/adsense.html').then(r=>r.text()).then(html=>{
