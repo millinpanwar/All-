@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>CSV to JSON Converter — Free, Fast, Private | AIConverter.tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Convert CSV to JSON in your browser. No upload, no signup. Supports headers, delimiter selection, and preview. Free & private." />
+  <link rel="canonical" href="https://aiconverter.tools/csv-to-json" />
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+  <meta property="og:title" content="CSV to JSON Converter — AIConverter.tools" />
+  <meta property="og:description" content="Free in-browser CSV to JSON converter with headers, delimiter control, and live preview. Privacy-first." />
+  <meta property="og:url" content="https://aiconverter.tools/csv-to-json" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0b6bff" />
+
+  <style>
+    :root{
+      --brand: #0b6bff; --brand-2:#6ea8ff;
+      --text:#0b1220; --muted:#5b6270;
+      --surface:#ffffff; --surface-2:#f7f8fb;
+      --border:#e5e7eb; --radius:16px; --shadow: 0 6px 24px rgba(2,12,27,.07);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{ --surface:#0f1219; --surface-2:#0c1016; --text:#e7edf7; --muted:#a1acc4; --border:#1f2633; --shadow: 0 6px 24px rgba(0,0,0,.35) }
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0}
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans";
+      color:var(--text); background:var(--surface-2); line-height:1.5; -webkit-font-smoothing:antialiased;
+    }
+    .container{max-width:1100px; margin:0 auto; padding:0 20px}
+    header{position:sticky; top:0; z-index:60; backdrop-filter:saturate(180%) blur(14px); background:color-mix(in srgb, var(--surface) 85%, transparent); border-bottom:1px solid var(--border)}
+    .nav{display:flex; align-items:center; justify-content:space-between; gap:16px; height:64px}
+    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit}
+    .logo{width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); box-shadow:inset 0 0 0 2px rgba(255,255,255,.1)}
+    .navlinks{display:flex; gap:14px; align-items:center; flex-wrap:wrap}
+    .navlinks a{color:var(--muted); text-decoration:none; font-weight:600; padding:8px 10px; border-radius:10px}
+    .navlinks a:hover{color:var(--text); background:var(--surface-2)}
+    .skip{position:absolute; left:-9999px}
+    .skip:focus{left:16px; top:16px; background:#000; color:#fff; padding:8px 10px; border-radius:8px}
+
+    /* Page Head */
+    .head{padding: 18px 0 8px}
+    .crumbs{font-size:12.5px; color:var(--muted)}
+    .crumbs a{color:inherit; text-decoration:none}
+    .title{display:flex; align-items:baseline; justify-content:space-between; gap:10px}
+    .title h1{margin: 8px 0 6px; font-size: clamp(22px, 2.6vw, 32px); line-height:1.2}
+    .subtitle{margin:0; color:var(--muted)}
+    .ad-top{margin:12px 0; border:1px dashed var(--border); background:var(--surface); border-radius:calc(var(--radius) + 2px); padding:12px; text-align:center}
+    .ad-label{display:block; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.12em; margin-bottom:6px; color:var(--muted)}
+    .ad-slot{min-height:90px}
+
+    /* Main */
+    .grid{display:grid; grid-template-columns: 3fr 1.2fr; gap:18px; margin:10px 0 26px}
+    @media (max-width: 1040px){ .grid{grid-template-columns: 1fr} }
+
+    .panel{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px}
+    .panel h2{margin:0 0 10px; font-size:18px}
+    .small{font-size:12.5px; color:var(--muted)}
+    .field{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .btn{appearance:none; border:0; padding:10px 14px; border-radius:12px; font-weight:700; background:var(--brand); color:#fff; cursor:pointer}
+    .btn.secondary{background:color-mix(in srgb, var(--brand) 12%, var(--surface-2)); color:var(--text); border:1px solid color-mix(in srgb, var(--brand) 35%, var(--border))}
+    .input, textarea{border:1px solid var(--border); border-radius:12px; padding:10px 12px; font:inherit; background:var(--surface-2); color:inherit}
+    textarea{width:100%; min-height:160px; resize:vertical}
+
+    .drop{
+      border:2px dashed var(--border); border-radius:12px; padding:16px; text-align:center; background:var(--surface-2);
+      transition:border-color .15s ease, background .15s ease;
+    }
+    .drop.drag{border-color: var(--brand); background: color-mix(in srgb, var(--brand) 8%, var(--surface-2))}
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .grid2{display:grid; grid-template-columns: repeat(2,1fr); gap:10px}
+    @media (max-width:680px){ .grid2{grid-template-columns: 1fr} }
+
+    .options{display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:10px; margin-top:10px}
+    @media (max-width:860px){ .options{grid-template-columns: repeat(2,1fr)} }
+    @media (max-width:520px){ .options{grid-template-columns: 1fr} }
+    .option{display:flex; gap:8px; align-items:center; justify-content:space-between; border:1px solid var(--border); background:var(--surface-2); padding:10px; border-radius:12px}
+    .option label{font-size:13.5px}
+
+    .tabs{display:flex; gap:8px; margin: 10px 0}
+    .tab{padding:8px 12px; border:1px solid var(--border); background:var(--surface-2); border-radius:999px; cursor:pointer; font-weight:600}
+    .tab.active{background:var(--brand); color:#fff; border-color:transparent}
+    pre{white-space:pre; overflow:auto; max-height:380px; background:var(--surface-2); border:1px solid var(--border); border-radius:12px; padding:12px}
+
+    table{width:100%; border-collapse:collapse; border:1px solid var(--border); border-radius:12px; overflow:hidden}
+    th, td{padding:8px 10px; border-bottom:1px solid var(--border); font-size:13.5px}
+    tbody tr:nth-child(even){background:color-mix(in srgb, var(--brand) 4%, var(--surface))}
+    .kpis{display:flex; gap:10px; flex-wrap:wrap}
+    .kpi{border:1px solid var(--border); background:var(--surface-2); padding:8px 12px; border-radius:999px; font-size:12.5px}
+
+    .side .ad-rect{border:1px dashed var(--border); border-radius:12px; padding:12px; text-align:center}
+    .foot{margin-top:8px}
+    footer{padding:26px 0; border-top:1px solid var(--border); background:var(--surface)}
+    .footgrid{display:grid; grid-template-columns: repeat(4,1fr); gap:16px}
+    @media (max-width:900px){ .footgrid{grid-template-columns: repeat(2,1fr)} }
+    @media (max-width:520px){ .footgrid{grid-template-columns: 1fr} }
+    .footgrid a{display:block; padding:6px 0; color:var(--muted); text-decoration:none}
+    .copy{margin-top:16px; font-size:12.5px; color:var(--muted); display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+
+    .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px; border:1px solid var(--border); padding:1px 6px; border-radius:6px; background: var(--surface-2); color: var(--muted)}
+    .hidden{display:none !important}
+    .error{background:#ffefef; color:#b80f0f; border:1px solid #ffd0d0; padding:10px 12px; border-radius:12px; margin:8px 0}
+  </style>
+
+  <!-- Organization -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"AIConverter.tools",
+    "url":"https://aiconverter.tools/",
+    "logo":"https://aiconverter.tools/favicon.ico"
+  }
+  </script>
+
+  <!-- WebApplication (this tool) -->
+  <script type="application/ld+json" id="ld-app">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"CSV to JSON Converter",
+    "url":"https://aiconverter.tools/csv-to-json",
+    "applicationCategory":"UtilitiesApplication",
+    "operatingSystem":"Any",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+    "featureList":[
+      "In-browser conversion (no upload)",
+      "Header row detection",
+      "Delimiter selection",
+      "Live preview & download"
+    ]
+  }
+  </script>
+
+  <!-- Breadcrumb -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"BreadcrumbList",
+    "itemListElement":[
+      {"@type":"ListItem","position":1,"name":"Home","item":"https://aiconverter.tools/"},
+      {"@type":"ListItem","position":2,"name":"CSV Tools","item":"https://aiconverter.tools/#tools"},
+      {"@type":"ListItem","position":3,"name":"CSV to JSON","item":"https://aiconverter.tools/csv-to-json"}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <header>
+    <div class="container nav" role="navigation" aria-label="Primary">
+      <a class="brand" href="/">
+        <span class="logo" aria-hidden="true"></span>
+        <span><b>AIConverter</b><span class="small">.tools</span></span>
+      </a>
+      <nav class="navlinks">
+        <a href="/#tools">Tools</a>
+        <a href="/#extractors">Extractors</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/sitemap">Sitemap</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <section class="head" aria-label="Breadcrumbs & title">
+      <div class="crumbs">
+        <a href="/">Home</a> › <a href="/#tools">Tools</a> › <span id="crumbTool">CSV to JSON</span>
+      </div>
+      <div class="title">
+        <div>
+          <h1 id="pageTitle">CSV to JSON Converter</h1>
+          <p class="subtitle" id="pageSubtitle">Free, private, and fast. Convert CSV to JSON in your browser — supports headers, delimiters, and preview.</p>
+        </div>
+        <div class="kpis" aria-label="Stats">
+          <span class="kpi" id="kpiRows">Rows: 0</span>
+          <span class="kpi" id="kpiCols">Cols: 0</span>
+          <span class="kpi" id="kpiSize">Size: 0 KB</span>
+        </div>
+      </div>
+
+      <!-- Top leaderboard ad -->
+      <aside class="ad-top" aria-label="Advertisement">
+        <span class="ad-label">Advertisement</span>
+        <div class="ad-slot" id="ad-leaderboard">
+          <!-- Paste AdSense responsive unit -->
+          <div class="small">Leaderboard (responsive)</div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="grid">
+      <!-- Main column -->
+      <div>
+        <!-- Input panel -->
+        <article class="panel" aria-labelledby="inputTitle">
+          <h2 id="inputTitle">Input</h2>
+
+          <div class="grid2" style="align-items:stretch">
+            <div>
+              <div id="drop" class="drop" tabindex="0" aria-label="Drop file here or use the file chooser">
+                <b>Drop your file here</b>
+                <div class="small">or click to choose a file • Press <span class="kbd">Ctrl</span>+<span class="kbd">V</span> to paste raw text</div>
+                <input id="file" type="file" accept=".csv,text/csv" class="hidden" />
+              </div>
+              <div class="row" style="margin-top:10px">
+                <button class="btn secondary" id="chooseBtn">Choose File</button>
+                <button class="btn secondary" id="sampleBtn" title="Load a small sample into the editor">Load Sample</button>
+                <button class="btn secondary" id="clearBtn">Clear</button>
+              </div>
+              <p class="small" style="margin-top:6px" id="fileMeta">No file selected.</p>
+            </div>
+            <div>
+              <label for="paste" class="small"><b>Or paste your CSV</b></label>
+              <textarea id="paste" placeholder="id,name,score
+1,Anaya,98
+2,Reyansh,91"></textarea>
+            </div>
+          </div>
+
+          <div class="options">
+            <div class="option">
+              <label for="hasHeader">Header row</label>
+              <input id="hasHeader" type="checkbox" checked />
+            </div>
+            <div class="option">
+              <label for="delimiter">Delimiter</label>
+              <select id="delimiter" class="input">
+                <option value=",">Comma (,)</option>
+                <option value=";">Semicolon (;)</option>
+                <option value="	">Tab (↹)</option>
+                <option value="|">Pipe (|)</option>
+                <option value="auto" selected>Auto-detect</option>
+              </select>
+            </div>
+            <div class="option">
+              <label for="encoding">Encoding</label>
+              <select id="encoding" class="input">
+                <option>UTF-8</option>
+                <option>ISO-8859-1</option>
+                <option>Windows-1252</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:12px">
+            <button class="btn" id="convertBtn">Convert to JSON</button>
+            <button class="btn secondary" id="copyBtn">Copy JSON</button>
+            <a class="btn secondary" id="downloadBtn" download="result.json" href="data:application/json,">Download</a>
+          </div>
+
+          <div id="err" class="error hidden" role="alert"></div>
+        </article>
+
+        <!-- In-article ad -->
+        <aside class="ad-top" aria-label="Advertisement" style="margin-top:14px">
+          <span class="ad-label">Advertisement</span>
+          <div class="ad-slot" id="ad-in-article">
+            <!-- Paste AdSense in-article unit -->
+            <div class="small">In-article (responsive)</div>
+          </div>
+        </aside>
+
+        <!-- Output panel -->
+        <article class="panel" aria-labelledby="outputTitle" style="margin-top:14px">
+          <h2 id="outputTitle">Output</h2>
+
+          <div class="tabs" role="tablist">
+            <button class="tab active" role="tab" aria-selected="true" id="tabPreview">Preview</button>
+            <button class="tab" role="tab" aria-selected="false" id="tabRaw">JSON</button>
+          </div>
+
+          <div id="previewWrap">
+            <div id="previewEmpty" class="small">Run a conversion to see a preview table here.</div>
+            <div id="previewTable" class="hidden" style="overflow:auto"></div>
+          </div>
+
+          <pre id="raw" class="hidden" aria-label="Raw JSON output"></pre>
+        </article>
+
+        <!-- FAQ -->
+        <article class="panel foot" id="faq">
+          <h2>CSV to JSON — FAQ</h2>
+          <details>
+            <summary><b>Does this upload my CSV?</b></summary>
+            <p>No. Everything runs locally in your browser; your data stays on your device.</p>
+          </details>
+          <details>
+            <summary><b>Can I convert large files?</b></summary>
+            <p>Most browsers handle files up to a few hundred MB. For huge files, split them first.</p>
+          </details>
+          <details>
+            <summary><b>How do I include a header row?</b></summary>
+            <p>Keep “Header row” checked and ensure your first line contains column names.</p>
+          </details>
+        </article>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="side">
+        <article class="panel">
+          <h2>How it works</h2>
+          <ol class="small" style="margin:0 0 8px 18px">
+            <li>Upload or paste your CSV.</li>
+            <li>Choose delimiter & header row.</li>
+            <li>Click <b>Convert</b> and download JSON.</li>
+          </ol>
+          <p class="small">Tip: Press <span class="kbd">/</span> to focus search on the homepage.</p>
+        </article>
+
+        <article class="panel">
+          <h2>Related tools</h2>
+          <ul class="small" style="margin:0; padding-left:18px">
+            <li><a href="/csv-to-pdf">CSV → PDF</a></li>
+            <li><a href="/csv-to-xlsx">CSV → XLSX</a></li>
+            <li><a href="/csv-to-xml">CSV → XML</a></li>
+            <li><a href="/email-extractor">Email Extractor</a></li>
+          </ul>
+        </article>
+
+        <article class="panel" aria-label="Advertisement">
+          <span class="ad-label">Advertisement</span>
+          <div class="ad-rect ad-slot" id="ad-rectangle">
+            <!-- Paste rectangle/rail AdSense unit -->
+            <div class="small">Rectangle (sidebar)</div>
+          </div>
+        </article>
+      </aside>
+    </section>
+  </main>
+
+  <!-- Sticky mobile ad -->
+  <div class="ad-top" style="position:fixed; left:0; right:0; bottom:0; margin:0; border-top:1px solid var(--border); display:none" id="ad-sticky">
+    <div class="container">
+      <span class="ad-label">Advertisement</span>
+      <div class="ad-slot">
+        <!-- Paste mobile anchor/sticky ad if enabled -->
+        <div class="small">Sticky mobile (responsive)</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footgrid">
+        <div>
+          <b>AIConverter.tools</b>
+          <p class="small">Fast CSV & file converters that run in your browser. No sign-up, privacy-first.</p>
+        </div>
+        <div>
+          <b>Converters</b>
+          <a href="/csv-to-json">CSV → JSON</a>
+          <a href="/csv-to-pdf">CSV → PDF</a>
+          <a href="/csv-to-xls">CSV → XLS</a>
+          <a href="/csv-to-xlsx">CSV → XLSX</a>
+          <a href="/csv-to-docx">CSV → Word</a>
+          <a href="/csv-to-xml">CSV → XML</a>
+          <a href="/csv-to-yaml">CSV → YAML</a>
+          <a href="/csv-to-kml">CSV → KML</a>
+        </div>
+        <div>
+          <b>Extractors</b>
+          <a href="/email-extractor">Email Extractor</a>
+          <a href="/phone-extractor">Phone Extractor</a>
+          <a href="/url-extractor">URL Extractor</a>
+        </div>
+        <div>
+          <b>Company</b>
+          <a href="/about">About</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="/sitemap">Sitemap</a>
+          <a href="/contact">Contact</a>
+        </div>
+      </div>
+      <div class="copy">
+        <span>© <span id="year"></span> AIConverter.tools</span>
+        <span class="small">Made for speed. Built with accessibility in mind.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ========= CONFIG: change these per tool =========
+    const CONFIG = {
+      id: "csv-to-json",
+      name: "CSV to JSON Converter",
+      slug: "/csv-to-json",
+      description: "Convert CSV to JSON in your browser — no upload. Supports headers, custom delimiter, live preview, and download.",
+      accepts: ".csv,text/csv",
+      sampleInput: "id,name,score\n1,Anaya,98\n2,Reyansh,91",
+      faq: [
+        { q: "Does this upload my CSV?", a: "No. Everything runs locally in your browser; your data stays on your device." },
+        { q: "Can I convert large files?", a: "Most browsers handle files up to a few hundred MB. For huge files, split them first." },
+        { q: "How do I include a header row?", a: "Keep “Header row” checked and ensure your first line contains column names." }
+      ]
+    };
+
+    // If you duplicate this page for another tool:
+    // 1) Update CONFIG.
+    // 2) Replace convert() with your tool logic (see examples below).
+    // 3) Adjust inputs/options UI if needed.
+
+    // ========= Utility: basic CSV parser (handles quotes & newlines) =========
+    function parseCSV(str, delimOpt="auto"){
+      const guessDelim = (s) => {
+        const cands = [",",";","|","\t"];
+        let best = ","; let bestCount = 0;
+        for(const d of cands){
+          const first = s.split("\n")[0] || "";
+          const count = first.split(d).length - 1;
+          if(count > bestCount){ best = d; bestCount = count; }
+        }
+        return best;
+      };
+      const DELIM = delimOpt==="auto" ? guessDelim(str) : delimOpt;
+      const rows = [];
+      let cur = ""; let row = []; let inQuotes = false; let i = 0;
+      while(i < str.length){
+        const c = str[i];
+        if(c === '"'){
+          if(inQuotes && str[i+1] === '"'){ cur += '"'; i += 2; continue; }
+          inQuotes = !inQuotes; i++; continue;
+        }
+        if(!inQuotes && (c === DELIM)){
+          row.push(cur); cur = ""; i++; continue;
+        }
+        if(!inQuotes && (c === "\n")){
+          row.push(cur); cur = ""; rows.push(row); row = []; i++; continue;
+        }
+        cur += c; i++;
+      }
+      row.push(cur); rows.push(row);
+      return rows;
+    }
+
+    function rowsToJSON(rows, hasHeader=true){
+      if(!rows.length) return [];
+      if(hasHeader){
+        const header = rows[0];
+        return rows.slice(1).map(r=>{
+          const obj={};
+          for(let i=0;i<header.length;i++){ obj[String(header[i] ?? `col_${i+1}`)] = r[i] ?? ""; }
+          return obj;
+        });
+      }else{
+        // array of arrays
+        return rows;
+      }
+    }
+
+    // ========= Tool logic (CSV -> JSON) =========
+    async function convert(inputText){
+      const hasHeader = document.getElementById("hasHeader").checked;
+      const delim = document.getElementById("delimiter").value;
+      const rows = parseCSV(inputText, delim);
+      const json = rowsToJSON(rows, hasHeader);
+      return { json, rows };
+    }
+
+    // ======== Alternative examples (for other pages) ========
+    // EMAIL EXTRACTOR:
+    // async function convert(inputText){
+    //   const emails = Array.from(new Set((inputText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/ig) || []).map(e=>e.trim())));
+    //   return { json: emails, rows: [emails] };
+    // }
+    // PHONE EXTRACTOR (simple international-ish, normalize to digits & '+'):
+    // async function convert(inputText){
+    //   const matches = inputText.match(/(\+?\d[\d\s().-]{7,}\d)/g) || [];
+    //   const cleaned = Array.from(new Set(matches.map(x=>x.replace(/[^\d+]/g,"").replace(/^00/,"+"))));
+    //   return { json: cleaned, rows: [cleaned] };
+    // }
+    // URL EXTRACTOR:
+    // async function convert(inputText){
+    //   const urls = Array.from(new Set((inputText.match(/\bhttps?:\/\/[^\s"']+/ig) || []).map(u=>u.trim())));
+    //   return { json: urls, rows: [urls] };
+    // }
+
+    // ========= Page wiring =========
+    const $ = (s, root=document) => root.querySelector(s);
+    const $$ = (s, root=document) => Array.from(root.querySelectorAll(s));
+    const state = { size: 0, result: "", rows: [], json: [] };
+
+    // Init metadata
+    (function init(){
+      // Titles/descriptions
+      $("#pageTitle").textContent = CONFIG.name;
+      $("#pageSubtitle").textContent = CONFIG.description;
+      $("#crumbTool").textContent = CONFIG.name;
+
+      // Accept types
+      $("#file").setAttribute("accept", CONFIG.accepts);
+      $("#paste").placeholder = CONFIG.sampleInput;
+
+      // FAQ sync to LD+JSON
+      const faqNodes = $$("#faq details");
+      if(CONFIG.faq?.length){
+        const faqEl = $("#faq");
+        faqEl.innerHTML = "<h2>FAQ</h2>" + CONFIG.faq.map(f => `
+          <details><summary><b>${f.q}</b></summary><p>${f.a}</p></details>
+        `).join("");
+        const ld = {
+          "@context":"https://schema.org",
+          "@type":"FAQPage",
+          "mainEntity": CONFIG.faq.map(f => ({
+            "@type":"Question","name":f.q, "acceptedAnswer":{"@type":"Answer","text":f.a}
+          }))
+        };
+        const s = document.createElement("script");
+        s.type="application/ld+json"; s.textContent = JSON.stringify(ld);
+        document.head.appendChild(s);
+      }
+
+      // App LD (name/url)
+      const ldApp = JSON.parse(document.getElementById("ld-app").textContent);
+      ldApp.name = CONFIG.name;
+      ldApp.url = location.origin + CONFIG.slug;
+      document.getElementById("ld-app").textContent = JSON.stringify(ldApp);
+
+      // Year
+      $("#year").textContent = new Date().getFullYear();
+
+      // Sticky ad toggle for mobile
+      const mq = window.matchMedia("(max-width: 780px)");
+      const toggleSticky = () => $("#ad-sticky").style.display = mq.matches ? "block" : "none";
+      mq.addEventListener?.("change", toggleSticky); toggleSticky();
+    })();
+
+    // Input sources
+    const fileInput = $("#file");
+    const drop = $("#drop");
+    const paste = $("#paste");
+    const fileMeta = $("#fileMeta");
+    const chooseBtn = $("#chooseBtn");
+    const sampleBtn = $("#sampleBtn");
+    const clearBtn = $("#clearBtn");
+
+    chooseBtn.addEventListener("click", () => fileInput.click());
+    sampleBtn.addEventListener("click", () => { paste.value = CONFIG.sampleInput; updateSize(); });
+    clearBtn.addEventListener("click", () => { paste.value = ""; fileInput.value = ""; fileMeta.textContent = "No file selected."; updateSize(); clearOutput(); });
+
+    // Drag & drop
+    ;["dragenter","dragover"].forEach(evt => drop.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); drop.classList.add("drag"); }));
+    ;["dragleave","drop"].forEach(evt => drop.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); drop.classList.remove("drag"); }));
+    drop.addEventListener("click", () => fileInput.click());
+    drop.addEventListener("drop", async (e) => {
+      const f = e.dataTransfer.files?.[0]; if(!f) return;
+      await readFile(f);
+    });
+
+    fileInput.addEventListener("change", async (e) => {
+      const f = e.target.files?.[0]; if(!f) return;
+      await readFile(f);
+    });
+
+    async function readFile(f){
+      fileMeta.textContent = `${f.name} — ${(f.size/1024).toFixed(1)} KB`;
+      const enc = $("#encoding").value || "UTF-8";
+      const text = await f.text(); // browser auto-decodes UTF-8 well; for others, consider TextDecoder
+      paste.value = text;
+      updateSize(f.size);
+    }
+
+    // Paste size update
+    paste.addEventListener("input", () => updateSize());
+    function updateSize(size){
+      const s = size ?? (new Blob([paste.value]).size);
+      state.size = s;
+      $("#kpiSize").textContent = `Size: ${(s/1024).toFixed(1)} KB`;
+    }
+
+    // Convert
+    $("#convertBtn").addEventListener("click", handleConvert);
+    async function handleConvert(){
+      try{
+        $("#err").classList.add("hidden");
+        const text = (paste.value || "").trim();
+        if(!text){ throw new Error("Please upload a file or paste some text first."); }
+        const { json, rows } = await convert(text);
+        state.json = json;
+        state.rows = rows;
+        const raw = JSON.stringify(json, null, 2);
+        state.result = raw;
+        $("#raw").textContent = raw;
+        $("#downloadBtn").href = "data:application/json," + encodeURIComponent(raw);
+        renderPreview(rows);
+        // KPIs
+        if(rows?.length){
+          const cols = Math.max(...rows.map(r => r.length || 0));
+          $("#kpiRows").textContent = `Rows: ${rows.length}`;
+          $("#kpiCols").textContent = `Cols: ${cols}`;
+        }
+        // Switch to preview tab
+        setTab("preview");
+      }catch(err){
+        showError(err.message || String(err));
+      }
+    }
+
+    function showError(msg){
+      const el = $("#err"); el.textContent = msg; el.classList.remove("hidden");
+    }
+
+    // Preview & tabs
+    const tabPreview = $("#tabPreview");
+    const tabRaw = $("#tabRaw");
+    tabPreview.addEventListener("click", () => setTab("preview"));
+    tabRaw.addEventListener("click", () => setTab("raw"));
+
+    function setTab(which){
+      if(which === "preview"){
+        tabPreview.classList.add("active"); tabPreview.setAttribute("aria-selected","true");
+        tabRaw.classList.remove("active"); tabRaw.setAttribute("aria-selected","false");
+        $("#previewWrap").classList.remove("hidden");
+        $("#raw").classList.add("hidden");
+      }else{
+        tabRaw.classList.add("active"); tabRaw.setAttribute("aria-selected","true");
+        tabPreview.classList.remove("active"); tabPreview.setAttribute("aria-selected","false");
+        $("#previewWrap").classList.add("hidden");
+        $("#raw").classList.remove("hidden");
+      }
+    }
+
+    function renderPreview(rows){
+      const wrap = $("#previewTable");
+      const empty = $("#previewEmpty");
+      if(!rows?.length){ wrap.classList.add("hidden"); empty.classList.remove("hidden"); wrap.innerHTML=""; return; }
+      empty.classList.add("hidden"); wrap.classList.remove("hidden");
+      // Render first 200 rows for performance
+      const max = Math.min(rows.length, 200);
+      const cols = Math.max(...rows.slice(0,max).map(r => r.length));
+      let html = "<table><thead><tr>";
+      for(let c=0;c<cols;c++){ html += `<th>Col ${c+1}</th>`; }
+      html += "</tr></thead><tbody>";
+      for(let r=0;r<max;r++){
+        html += "<tr>";
+        for(let c=0;c<cols;c++){ html += `<td>${escapeHtml(rows[r]?.[c] ?? "")}</td>`; }
+        html += "</tr>";
+      }
+      html += "</tbody></table>";
+      wrap.innerHTML = html;
+    }
+
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])) }
+
+    // Copy
+    $("#copyBtn").addEventListener("click", async ()=>{
+      if(!state.result){ showError("Nothing to copy yet. Convert first."); return; }
+      await navigator.clipboard.writeText(state.result);
+      toast("Copied JSON to clipboard");
+    });
+
+    // Simple toast
+    function toast(msg){
+      const t = document.createElement("div");
+      t.textContent = msg;
+      t.style.position="fixed"; t.style.bottom="16px"; t.style.left="50%"; t.style.transform="translateX(-50%)";
+      t.style.background="color-mix(in srgb, var(--brand) 92%, #000)"; t.style.color="#fff";
+      t.style.padding="10px 14px"; t.style.borderRadius="10px"; t.style.boxShadow="var(--shadow)"; t.style.zIndex="1000";
+      document.body.appendChild(t);
+      setTimeout(()=>{ t.remove(); }, 1400);
+    }
+
+    // Tabs default
+    setTab("preview");
+
+    // Keyboard paste focus helper like homepage
+    document.addEventListener("keydown", (e)=>{
+      if(e.key === "/"){
+        const tag = document.activeElement?.tagName?.toLowerCase();
+        if(tag !== "input" && tag !== "textarea"){ e.preventDefault(); document.getElementById("paste").focus(); }
+      }
+    });
+  </script>
+</body>
+</html>

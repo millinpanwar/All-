@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Convert CSV to JSON, PDF, Excel & More — AIConverter.tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Free, fast, privacy-first CSV and file converters. Convert CSV to JSON, PDF, XLS/XLSX, Word, XML, YAML, KML, plus Email/Phone/URL extractors and a CSV Template Engine. Everything runs in your browser." />
+  <link rel="canonical" href="https://aiconverter.tools/" />
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+  <meta property="og:title" content="AIConverter.tools — Free CSV & File Converters" />
+  <meta property="og:description" content="Convert CSV to JSON, PDF, Excel, Word, XML, YAML, KML. Private, fast, no upload. Extract emails/phones/URLs. CSV Template Engine included." />
+  <meta property="og:url" content="https://aiconverter.tools/" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0b6bff" />
+
+  <style>
+    :root{
+      --bg: #0b0c10; /* used for dark mode fallback */
+      --brand: #0b6bff;
+      --brand-2: #6ea8ff;
+      --text: #0b1220;
+      --muted: #5b6270;
+      --border: #e5e7eb;
+      --surface: #ffffff;
+      --surface-2:#f7f8fb;
+      --radius: 16px;
+      --shadow: 0 6px 24px rgba(2,12,27,.07);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #0b0c10;
+        --surface: #0f1219;
+        --surface-2:#0c1016;
+        --text: #e7edf7;
+        --muted:#a1acc4;
+        --border:#1f2633;
+        --shadow: 0 6px 24px rgba(0,0,0,.35);
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0}
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: var(--surface-2);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* Layout */
+    .container{max-width:1200px; margin:0 auto; padding: 0 20px}
+    header{
+      position: sticky; top:0; z-index: 60;
+      backdrop-filter: saturate(180%) blur(14px);
+      background: color-mix(in srgb, var(--surface) 80%, transparent);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+      height:64px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;
+    }
+    .logo{
+      width:34px; height:34px; border-radius:10px; background: linear-gradient(135deg,var(--brand),var(--brand-2));
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.1);
+    }
+    .brand b{font-weight:800; letter-spacing:.2px}
+    .navlinks{display:flex; gap:14px; align-items:center; flex-wrap:wrap}
+    .navlinks a{
+      color: var(--muted); text-decoration:none; font-weight:600; padding:8px 10px; border-radius:10px;
+    }
+    .navlinks a:hover{color: var(--text); background: var(--surface-2)}
+
+    .skip{position:absolute; left:-9999px}
+    .skip:focus{left:16px; top:16px; background:#000; color:#fff; padding:8px 10px; border-radius:8px}
+
+    .hero{
+      padding: 28px 0 16px;
+      display:grid; grid-template-columns: 1.2fr .8fr; gap:24px;
+    }
+    @media (max-width: 980px){ .hero{grid-template-columns: 1fr} }
+    .hero-card{
+      background: var(--surface); border:1px solid var(--border); border-radius: calc(var(--radius) + 6px);
+      box-shadow: var(--shadow); padding: 22px;
+    }
+    .h1{
+      margin: 4px 0 10px; font-size: clamp(22px, 2.6vw, 34px); line-height:1.2; font-weight: 900; letter-spacing:.2px;
+    }
+    .sub{color:var(--muted); margin: 0 0 14px; font-size: 14.5px}
+    .searchbar{
+      display:flex; gap:10px; align-items:center; margin: 8px 0 14px;
+      border:1px solid var(--border); border-radius: 12px; padding: 8px 10px; background: var(--surface-2);
+    }
+    .searchbar input{
+      border:0; outline:0; flex:1; background:transparent; font-size:16px; padding:6px 4px; color:inherit;
+    }
+    .btn{
+      appearance:none; border:0; padding: 10px 14px; border-radius: 12px; font-weight:700;
+      background: var(--brand); color:#fff; cursor:pointer; transition: transform .06s ease;
+    }
+    .btn:hover{ transform: translateY(-1px) }
+    .quick-row{display:flex; flex-wrap:wrap; gap:8px}
+    .chip{
+      border:1px solid var(--border); background: var(--surface-2); padding:6px 10px; border-radius: 999px; font-size:13px; cursor:pointer
+    }
+    .chip[aria-pressed="true"]{background: color-mix(in srgb, var(--brand) 14%, var(--surface-2)); border-color: color-mix(in srgb, var(--brand) 35%, var(--border)); color: var(--text)}
+
+    .ad-box{
+      border:1px dashed var(--border); background: var(--surface);
+      border-radius: calc(var(--radius) + 2px); padding:14px; text-align:center; color: var(--muted);
+    }
+    .ad-label{display:block; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing: .12em; margin-bottom:6px; color:var(--muted)}
+    .ad-slot{min-height:90px}
+    .ad-sticky-mobile{
+      position: fixed; left:0; right:0; bottom:0; z-index: 70;
+      padding: 8px 10px; background: color-mix(in srgb, var(--surface) 90%, transparent); border-top:1px solid var(--border);
+      display:none;
+    }
+    @media (max-width: 780px){ .ad-sticky-mobile{display:block} }
+
+    .grid-wrap{
+      display:grid; grid-template-columns: 3fr 1.2fr; gap: 22px; margin: 8px 0 34px;
+    }
+    @media (max-width: 1100px){ .grid-wrap{grid-template-columns: 1fr} }
+    .tool-grid{
+      display:grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    }
+    @media (max-width: 980px){ .tool-grid{grid-template-columns: repeat(2, 1fr)} }
+    @media (max-width: 560px){ .tool-grid{grid-template-columns: 1fr} }
+    .card{
+      background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow);
+      display:flex; flex-direction:column; gap:10px; min-height: 148px;
+    }
+    .card h3{font-size: 16.5px; margin:0}
+    .card p{font-size: 13.5px; color: var(--muted); margin:0}
+    .meta{display:flex; gap:10px; flex-wrap:wrap; margin-top:auto}
+    .badge{font-size:12px; padding:4px 8px; background: color-mix(in srgb, var(--brand) 12%, var(--surface-2)); border:1px solid color-mix(in srgb, var(--brand) 35%, var(--border)); color: var(--text); border-radius: 999px}
+    .card .go{align-self:flex-start}
+
+    .sidebar{
+      display: grid; gap:14px;
+    }
+    .sidepanel{
+      background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow);
+    }
+    .sidepanel h4{margin:6px 0 8px}
+    .list{margin:0; padding:0; list-style:none}
+    .list li{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px dashed var(--border)}
+    .list li:last-child{border-bottom:0}
+    .list a{color:inherit; text-decoration:none}
+    .small{font-size: 12.5px; color: var(--muted)}
+
+    footer{
+      padding: 26px 0; border-top:1px solid var(--border); background: var(--surface);
+    }
+    .foot-grid{display:grid; grid-template-columns: repeat(4,1fr); gap:16px}
+    @media (max-width:900px){ .foot-grid{grid-template-columns: repeat(2,1fr)} }
+    @media (max-width:520px){ .foot-grid{grid-template-columns: 1fr} }
+    .foot-grid a{display:block; padding:6px 0; color: var(--muted); text-decoration:none}
+    .copy{margin-top:16px; font-size:12.5px; color: var(--muted); display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+
+    /* Utilities */
+    .hide{display:none !important}
+    .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0}
+    .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px; border:1px solid var(--border); padding:1px 6px; border-radius:6px; background: var(--surface-2); color: var(--muted)}
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"AIConverter.tools",
+    "url":"https://aiconverter.tools/",
+    "logo":"https://aiconverter.tools/favicon.ico"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebSite",
+    "url":"https://aiconverter.tools/",
+    "name":"AIConverter.tools",
+    "potentialAction":{
+      "@type":"SearchAction",
+      "target":"https://aiconverter.tools/search?q={query}",
+      "query-input":"required name=query"
+    }
+  }
+  </script>
+  <!-- FAQPage structured data will be injected by JS so it's in sync with rendered FAQs -->
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <header>
+    <div class="container nav" role="navigation" aria-label="Primary">
+      <a class="brand" href="/">
+        <span class="logo" aria-hidden="true"></span>
+        <span><b>AIConverter</b><span class="small">.tools</span></span>
+      </a>
+      <nav class="navlinks">
+        <a href="/#tools">Tools</a>
+        <a href="/#extractors">Extractors</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/about">About</a>
+        <a href="/sitemap">Sitemap</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <section class="hero" aria-label="Intro">
+      <div class="hero-card">
+        <h1 class="h1">Convert CSV & files faster — private, in-browser.</h1>
+        <p class="sub">No uploads. No logins. Your data stays on your device. Start with a popular task or search all tools below.</p>
+
+        <div class="searchbar" role="search">
+          <input id="search" type="search" placeholder="Search tools… (e.g., CSV to JSON, Email Extractor)" aria-label="Search tools" />
+          <button class="btn" id="searchBtn" aria-label="Search">Search</button>
+        </div>
+
+        <div class="quick-row" id="categories" role="toolbar" aria-label="Filter tools by category">
+          <!-- chips injected by JS -->
+        </div>
+
+        <div style="margin-top:12px">
+          <button class="btn" id="primaryCta" data-slug="/csv-to-json">CSV → JSON</button>
+          <span class="small">Tip: press <span class="kbd">/</span> to focus search</span>
+        </div>
+      </div>
+
+      <!-- Right hero column: above-the-fold leaderboard on desktop -->
+      <aside class="hero-card" aria-label="Advertisement">
+        <span class="ad-label">Advertisement</span>
+        <div class="ad-box ad-slot" id="ad-leaderboard">
+          <!-- ⤵ Paste your responsive AdSense unit -->
+          <!-- Example:
+          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXX" crossorigin="anonymous"></script>
+          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXX" data-ad-slot="YYYY" data-ad-format="auto" data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          -->
+          <div class="small">Leaderboard (responsive)</div>
+        </div>
+        <p class="small" style="margin-top:10px">We keep ads clearly labeled, separate from tool actions, and responsive across devices.</p>
+      </aside>
+    </section>
+
+    <section class="grid-wrap" id="tools">
+      <div>
+        <h2 style="margin:6px 0 10px">All Tools</h2>
+        <div id="toolGrid" class="tool-grid" aria-live="polite"></div>
+
+        <!-- In-feed ad after a few cards -->
+        <div class="ad-box" style="margin: 14px 0" aria-label="Advertisement">
+          <span class="ad-label">Advertisement</span>
+          <div class="ad-slot" id="ad-infeed">
+            <!-- Paste in-feed responsive AdSense unit -->
+            <div class="small">In-feed (responsive)</div>
+          </div>
+        </div>
+
+        <section id="recent" aria-label="Recently used" class="sidepanel" style="margin-top:16px">
+          <h3 style="margin-top:0">Recently Used</h3>
+          <ul id="recentList" class="list small"></ul>
+        </section>
+      </div>
+
+      <aside class="sidebar">
+        <div class="sidepanel" id="extractors">
+          <h4>Popular Extractors</h4>
+          <ul class="list">
+            <li><a href="/email-extractor">Email Extractor</a><span class="small">CSV/Text → Emails</span></li>
+            <li><a href="/phone-extractor">Phone Extractor</a><span class="small">CSV/Text → Numbers</span></li>
+            <li><a href="/url-extractor">URL Extractor</a><span class="small">CSV/Text → Links</span></li>
+          </ul>
+        </div>
+
+        <div class="sidepanel">
+          <h4>CSV Template Engine</h4>
+          <p class="small">Generate CSVs from templates & variables. Great for bulk uploads or test data.</p>
+          <a class="btn" href="/csv-template-engine">Open Template Engine</a>
+        </div>
+
+        <div class="sidepanel" aria-label="Advertisement">
+          <span class="ad-label">Advertisement</span>
+          <div class="ad-box ad-slot" id="ad-sidebar">
+            <!-- Paste sidebar/rectangle AdSense unit -->
+            <div class="small">Rectangle (sidebar)</div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="faq" class="sidepanel">
+      <h2 style="margin-top:0">FAQ</h2>
+      <details>
+        <summary><b>Does AIConverter.tools upload my files?</b></summary>
+        <p>No. Everything runs in your browser; your data stays on your device unless a tool explicitly says otherwise.</p>
+      </details>
+      <details>
+        <summary><b>Is it free?</b></summary>
+        <p>Yes. Most tools are free. We support development with clearly labeled ads.</p>
+      </details>
+      <details>
+        <summary><b>Can I link directly to a tool?</b></summary>
+        <p>Absolutely. Use clean URLs like <code>/csv-to-json</code>, <code>/csv-to-pdf</code>, etc.</p>
+      </details>
+      <details>
+        <summary><b>Why am I seeing ads?</b></summary>
+        <p>Ads keep the tools free. We follow Google’s guidance on responsible placement and labeling.</p>
+      </details>
+    </section>
+  </main>
+
+  <div class="ad-sticky-mobile" role="region" aria-label="Advertisement">
+    <div class="container">
+      <span class="ad-label">Advertisement</span>
+      <div class="ad-slot" id="ad-sticky">
+        <!-- Paste mobile anchor/sticky ad if enabled in your account -->
+        <div class="small">Sticky mobile (responsive)</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="foot-grid">
+        <div>
+          <b>AIConverter.tools</b>
+          <p class="small">Fast CSV & file converters that run in your browser. No sign-up, privacy-first.</p>
+        </div>
+        <div>
+          <b>Converters</b>
+          <a href="/csv-to-json">CSV → JSON</a>
+          <a href="/csv-to-pdf">CSV → PDF</a>
+          <a href="/csv-to-xls">CSV → XLS</a>
+          <a href="/csv-to-xlsx">CSV → XLSX</a>
+          <a href="/csv-to-docx">CSV → Word</a>
+          <a href="/csv-to-xml">CSV → XML</a>
+          <a href="/csv-to-yaml">CSV → YAML</a>
+          <a href="/csv-to-kml">CSV → KML</a>
+        </div>
+        <div>
+          <b>Extractors</b>
+          <a href="/email-extractor">Email Extractor</a>
+          <a href="/phone-extractor">Phone Extractor</a>
+          <a href="/url-extractor">URL Extractor</a>
+        </div>
+        <div>
+          <b>Company</b>
+          <a href="/about">About</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="/sitemap">Sitemap</a>
+          <a href="/contact">Contact</a>
+        </div>
+      </div>
+      <div class="copy">
+        <span>© <span id="year"></span> AIConverter.tools</span>
+        <span class="small">Made for speed. Built with accessibility in mind.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // --- Data ---
+    const CATEGORIES = [
+      { id: "all", name: "All" },
+      { id: "csv", name: "CSV Converters" },
+      { id: "extract", name: "Extractors" },
+      { id: "engine", name: "Template Engine" }
+    ];
+
+    const TOOLS = [
+      // CSV converters (use your final slugs without .html)
+      { name:"CSV → JSON", slug:"/csv-to-json", cat:"csv", desc:"Paste or upload CSV and download clean JSON with options for headers and types.", badge:"Popular", keywords:"csv json convert transformer" },
+      { name:"CSV → PDF", slug:"/csv-to-pdf", cat:"csv", desc:"Generate a printable table-PDF from CSV. Page size, margins & fonts included.", badge:"New", keywords:"csv pdf export table" },
+      { name:"CSV → XLS", slug:"/csv-to-xls", cat:"csv", desc:"Turn CSV into legacy Excel .xls for older workflows.", keywords:"csv xls excel 97" },
+      { name:"CSV → XLSX", slug:"/csv-to-xlsx", cat:"csv", desc:"Modern Excel output with types and date normalization.", keywords:"csv xlsx excel 2007" },
+      { name:"CSV → Word (DOCX)", slug:"/csv-to-docx", cat:"csv", desc:"Create a DOCX table from CSV for reports.", keywords:"csv word docx report" },
+      { name:"CSV → XML", slug:"/csv-to-xml", cat:"csv", desc:"Map columns to XML nodes and export.", keywords:"csv xml sitemap data" },
+      { name:"CSV → YAML", slug:"/csv-to-yaml", cat:"csv", desc:"Generate clean YAML with indentation controls.", keywords:"csv yaml yml" },
+      { name:"CSV → KML", slug:"/csv-to-kml", cat:"csv", desc:"Plot lat/long rows to KML for maps.", keywords:"csv kml map google-earth" },
+
+      // Extractors
+      { name:"Email Extractor", slug:"/email-extractor", cat:"extract", desc:"Extract unique emails from CSV/text with de-dupe.", badge:"Free", keywords:"extract email csv regex" },
+      { name:"Phone Extractor", slug:"/phone-extractor", cat:"extract", desc:"Normalize and extract phone numbers by country.", keywords:"extract phone number E.164" },
+      { name:"URL Extractor", slug:"/url-extractor", cat:"extract", desc:"Grab all URLs from text/CSV fields with de-dupe.", keywords:"extract url link http https" },
+
+      // Template engine
+      { name:"CSV Template Engine", slug:"/csv-template-engine", cat:"engine", desc:"Merge variables into CSV templates for bulk ops.", badge:"Pro workflow", keywords:"template csv generator variables" }
+    ];
+
+    // --- Helpers ---
+    const $ = (s, root=document) => root.querySelector(s);
+    const $$ = (s, root=document) => Array.from(root.querySelectorAll(s));
+    const toolGrid = $("#toolGrid");
+    const recentList = $("#recentList");
+
+    // Build category chips
+    const catWrap = $("#categories");
+    CATEGORIES.forEach(c => {
+      const b = document.createElement("button");
+      b.className = "chip";
+      b.textContent = c.name;
+      b.dataset.cat = c.id;
+      b.setAttribute("aria-pressed", c.id === "all" ? "true" : "false");
+      b.addEventListener("click", () => {
+        $$(".chip", catWrap).forEach(x => x.setAttribute("aria-pressed","false"));
+        b.setAttribute("aria-pressed","true");
+        renderGrid($("#search").value.trim(), c.id);
+      });
+      catWrap.appendChild(b);
+    });
+
+    // Render tool cards
+    function renderGrid(q="", cat="all"){
+      const query = q.toLowerCase();
+      toolGrid.innerHTML = "";
+      let shown = 0;
+
+      TOOLS.filter(t => {
+        const inCat = (cat === "all") || (t.cat === cat);
+        const inQuery = !query || (t.name.toLowerCase().includes(query) || (t.desc?.toLowerCase().includes(query)) || (t.keywords?.includes(query)));
+        return inCat && inQuery;
+      }).forEach(t => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.innerHTML = `
+          <h3><a href="${t.slug}">${t.name}</a></h3>
+          <p>${t.desc || ""}</p>
+          <div class="meta">
+            ${t.badge ? `<span class="badge" aria-label="badge">${t.badge}</span>` : ""}
+            <a class="btn go" href="${t.slug}" data-slug="${t.slug}">Open</a>
+          </div>
+        `;
+        card.addEventListener("click", e => {
+          const link = e.target.closest("a[href]");
+          if(!link) return;
+          pushRecent(t);
+        });
+        toolGrid.appendChild(card);
+        shown++;
+      });
+
+      if(shown === 0){
+        const empty = document.createElement("div");
+        empty.className = "sidepanel";
+        empty.innerHTML = `<b>No tools found</b><p class="small">Try a different search or clear filters.</p>`;
+        toolGrid.appendChild(empty);
+      }
+    }
+
+    // Search interactions
+    const search = $("#search");
+    $("#searchBtn").addEventListener("click", () => renderGrid(search.value));
+    search.addEventListener("input", () => renderGrid(search.value));
+    document.addEventListener("keydown", (e)=>{
+      if(e.key === "/"){
+        const tag = document.activeElement?.tagName?.toLowerCase();
+        if(tag !== "input" && tag !== "textarea"){ e.preventDefault(); search.focus(); }
+      }
+    });
+
+    // Primary CTA
+    $("#primaryCta").addEventListener("click", (e)=>{
+      const slug = e.currentTarget.dataset.slug;
+      pushRecent({ name:"CSV → JSON", slug, cat:"csv" });
+      location.href = slug;
+    });
+
+    // Recently used tools
+    function loadRecent(){
+      const data = JSON.parse(localStorage.getItem("recentTools")||"[]");
+      recentList.innerHTML = "";
+      data.slice(0,6).forEach(t=>{
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${t.slug}">${t.name}</a><span class="small">${labelCat(t.cat)}</span>`;
+        recentList.appendChild(li);
+      });
+    }
+    function pushRecent(t){
+      const data = JSON.parse(localStorage.getItem("recentTools")||"[]");
+      const filtered = data.filter(x => x.slug !== t.slug);
+      filtered.unshift({ name:t.name, slug:t.slug, cat:t.cat });
+      localStorage.setItem("recentTools", JSON.stringify(filtered.slice(0,12)));
+      loadRecent();
+    }
+    function labelCat(id){
+      return id==="csv" ? "CSV" : id==="extract" ? "Extractor" : "Engine";
+    }
+
+    // FAQ structured data sync (simple)
+    (function faqLD(){
+      const faqs = Array.from(document.querySelectorAll("#faq details")).map(d => ({
+        q: d.querySelector("summary")?.innerText.trim(),
+        a: Array.from(d.childNodes).slice(1).map(n=>n.textContent||"").join(" ").trim()
+      }));
+      const json = {
+        "@context":"https://schema.org",
+        "@type":"FAQPage",
+        "mainEntity": faqs.map(f => ({
+          "@type":"Question",
+          "name": f.q,
+          "acceptedAnswer": { "@type":"Answer", "text": f.a }
+        }))
+      };
+      const script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.textContent = JSON.stringify(json);
+      document.head.appendChild(script);
+    })();
+
+    // Footer year
+    $("#year").textContent = new Date().getFullYear();
+
+    // Initial render
+    renderGrid();
+    loadRecent();
+  </script>
+</body>
+</html>
